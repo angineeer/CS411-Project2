@@ -1,0 +1,23 @@
+{
+  "name": "cs411-project2",
+  "version": "1.0.0",
+  "description": "Instant messaging application.",
+  "main": "app.js",
+  "dependencies": {
+    "express": "^4.17.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/angineeer/CS411-Project2.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/angineeer/CS411-Project2/issues"
+  },
+  "homepage": "https://github.com/angineeer/CS411-Project2#readme"
+}
