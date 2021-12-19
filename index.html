@@ -377,7 +377,7 @@
                                     <a href="/" class="btn">
                                         <img src="./hoot_icon.jpeg" alt="icon">
                                     </a>
-                                    
+
                                     <!-- <a href="javascript:void(0);" class="btn btn-outline-secondary"><i
                                             class="fa fa-camera"></i></a>
                                     <a href="javascript:void(0);" class="btn btn-outline-primary"><i
@@ -390,7 +390,8 @@
                             </div>
                         </div>
                         <div class="chat-history">
-                            <ul id="messages" class="m-b-0" style="overflow-x: hidden; overflow-y: scroll; min-height: 500px; max-height: 500px;">
+                            <ul id="messages" class="m-b-0"
+                                style="overflow-x: hidden; overflow-y: scroll; min-height: 500px; max-height: 500px;">
                                 <li class="clearfix">
                                     <div class="message-data text-right">
                                         <span class="message-data-time">10:10 AM, Today</span>
@@ -433,7 +434,9 @@
         var username = "";
         var receivername = "";
         var roomId = "";
-        var socket = null;
+        var roomSocket = null;
+        var userSocket = null;
+
 
         $(window).on('load', function () {
             $('#loginModal').modal('show');
@@ -450,6 +453,13 @@
             $.post("/login", { username: username }, (data) => {
                 console.log(data);
                 getFriends();
+                userSocket = io("", { query: { username: username } });
+                userSocket.on("connect", () => {
+                    console.log("User socket Connected");
+                });
+                userSocket.on("addfriend", (friend) => {
+                    renderFriend(friend);
+                });
             });
         });
 
@@ -493,9 +503,9 @@
         function getFriends() {
             $("#friends").empty();
             $.get("/friend", { username: username }, (friends) => {
-                friends.forEach(renderFriends);
+                friends.forEach(renderFriend);
 
-                $(".friend-card").click(function() {
+                $(".friend-card").click(function () {
                     receivername = $(this).find(".name").text();
                     $(".friend-card").removeClass("active");
                     $(this).addClass("active");
@@ -506,7 +516,7 @@
             })
         }
 
-        function renderFriends(friend) {
+        function renderFriend(friend) {
             $("#friends").append(
                 `<li class="clearfix friend-card">
                     <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar">
@@ -527,12 +537,12 @@
             $.get("/room", { username: username, receivername: receivername }, (rid) => {
                 console.log(rid);
                 roomId = rid;
-                if (socket) socket.close();
-                socket = io("", { query: { roomId: roomId } });
-                socket.on("connect", () => {
+                if (roomSocket) roomSocket.close();
+                roomSocket = io("", { query: { roomId: roomId } });
+                roomSocket.on("connect", () => {
                     console.log("Socket Connected");
                 });
-                socket.on("message", (message) => {
+                roomSocket.on("message", (message) => {
                     addMessage(message);
                     $("#messages").scrollTop($("#messages")[0].scrollHeight)
                 });

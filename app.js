@@ -142,6 +142,7 @@ app.post("/friend", (req, res) => {
                                     if (err)
                                         res.status(500).send("Error");
                                     else {
+                                        io.in(user2.username).emit("addfriend", user);
                                         res.sendStatus(200);
                                     }
                                 });
@@ -181,11 +182,19 @@ app.post('/login', (req, res) => {
 
 io.on('connection', socket => {
     console.log('A user is connecting to room: ' + socket.handshake.query.roomId);
-
-    socket.join(socket.handshake.query.roomId, function(err){
-        console.log("Rooms after join: ", socket.rooms);
-        console.log(err);
-    });
+    console.log('A user is connecting: ' + socket.handshake.query.username);
+    if (socket.handshake.query.roomId) {
+        socket.join(socket.handshake.query.roomId, function (err) {
+            console.log("Rooms after join: ", socket.rooms);
+            console.log(err);
+        });
+    }
+    else if (socket.handshake.query.username) {
+        socket.join(socket.handshake.query.username, function (err) {
+            console.log("Rooms after join: ", socket.rooms);
+            console.log(err);
+        });
+    }
 })
 
 io.on('disconnect', socket => {
