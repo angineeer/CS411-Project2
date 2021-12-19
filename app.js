@@ -61,8 +61,7 @@ app.post('/messages', (req, res) => {
                     console.error(err);
                     res.status(500).send("Error");
                 } else {
-                    console.log("message will be emitted to room " + req.body.roomId);
-                    io.to(room._id).emit("message", message);
+                    io.in(req.body.roomId).emit("message", message);
                     res.send(message);
                 }
             });
@@ -181,8 +180,12 @@ app.post('/login', (req, res) => {
 });
 
 io.on('connection', socket => {
-    console.log('A user is connected to room: ' + socket.handshake.query.roomId);
-    socket.join(socket.handshake.query.roomId);
+    console.log('A user is connecting to room: ' + socket.handshake.query.roomId);
+
+    socket.join(socket.handshake.query.roomId, function(err){
+        console.log("Rooms after join: ", socket.rooms);
+        console.log(err);
+    });
 })
 
 io.on('disconnect', socket => {

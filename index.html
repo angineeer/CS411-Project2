@@ -437,6 +437,7 @@
 
         $(window).on('load', function () {
             $('#loginModal').modal('show');
+            clearMessages();
         });
 
         $("#usernameLogin-button").click(function () {
@@ -528,9 +529,11 @@
                 roomId = rid;
                 if (socket) socket.close();
                 socket = io("", { query: { roomId: roomId } });
+                socket.on("connect", () => {
+                    console.log("Socket Connected");
+                });
                 socket.on("message", (message) => {
-                    console.log("Message has been incame from the socket");
-                    console.log(message);
+                    addMessage(message);
                     $("#messages").scrollTop($("#messages")[0].scrollHeight)
                 });
                 getMessages();
