@@ -6,14 +6,28 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <link rel="icon" href="./hoot_icon.jpeg" type="image/icon type">
+
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
     <style>
-        body{
+        body {
             background-color: #f4f7f6;
-            margin-top:20px;
+            margin-top: 20px;
         }
+
         .card {
             background: #fff;
             transition: .5s;
@@ -24,6 +38,7 @@
             width: 100%;
             box-shadow: 0 1px 2px 0 rgb(0 0 0 / 10%);
         }
+
         .chat-app .people-list {
             width: 280px;
             position: absolute;
@@ -230,15 +245,19 @@
                 left: -400px;
                 display: none
             }
+
             .chat-app .people-list.open {
                 left: 0
             }
+
             .chat-app .chat {
                 margin: 0
             }
+
             .chat-app .chat .chat-header {
                 border-radius: 0.55rem 0.55rem 0 0
             }
+
             .chat-app .chat-history {
                 height: 300px;
                 overflow-x: auto
@@ -250,6 +269,7 @@
                 height: 650px;
                 overflow-x: auto
             }
+
             .chat-app .chat-history {
                 height: 600px;
                 overflow-x: auto
@@ -261,6 +281,7 @@
                 height: 480px;
                 overflow-x: auto
             }
+
             .chat-app .chat-history {
                 height: calc(100vh - 350px);
                 overflow-x: auto
@@ -272,129 +293,267 @@
 <body>
     <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" />
 
-    <div class="container">
-    <div class="row clearfix">
-        <div class="col-lg-12">
-            <div class="card chat-app">
-                <div id="plist" class="people-list">
-                    <div class="input-group">
-                        <div class="input-group-prepend">
-                            <span class="input-group-text"><i class="fa fa-search"></i></span>
-                        </div>
-                        <input type="text" class="form-control" placeholder="Search...">
-                    </div>
-                    <ul class="list-unstyled chat-list mt-2 mb-0">
-                        <li class="clearfix">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar">
-                            <div class="about">
-                                <div class="name">Vincent Porter</div>
-                                <div class="status"> <i class="fa fa-circle offline"></i> left 7 mins ago </div>                                            
-                            </div>
-                        </li>
-                        <li class="clearfix active">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
-                            <div class="about">
-                                <div class="name">Aiden Chavez</div>
-                                <div class="status"> <i class="fa fa-circle online"></i> online </div>
-                            </div>
-                        </li>
-                        <li class="clearfix">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar">
-                            <div class="about">
-                                <div class="name">Mike Thomas</div>
-                                <div class="status"> <i class="fa fa-circle online"></i> online </div>
-                            </div>
-                        </li>                                    
-                        <li class="clearfix">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
-                            <div class="about">
-                                <div class="name">Christian Kelly</div>
-                                <div class="status"> <i class="fa fa-circle offline"></i> left 10 hours ago </div>
-                            </div>
-                        </li>
-                        <li class="clearfix">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar8.png" alt="avatar">
-                            <div class="about">
-                                <div class="name">Monica Ward</div>
-                                <div class="status"> <i class="fa fa-circle online"></i> online </div>
-                            </div>
-                        </li>
-                        <li class="clearfix">
-                            <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar">
-                            <div class="about">
-                                <div class="name">Dean Henry</div>
-                                <div class="status"> <i class="fa fa-circle offline"></i> offline since Oct 28 </div>
-                            </div>
-                        </li>
-                    </ul>
+    <!-- Modal -->
+    <div class="modal fade" id="loginModal" tabindex="-1" role="dialog" aria-labelledby="loginModalTitle"
+        aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLongTitle">Login With Username</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
-                <div class="chat">
-                    <div class="chat-header clearfix">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
-                                </a>
-                                <div class="chat-about">
-                                    <h6 class="m-b-0">Aiden Chavez</h6>
-                                    <small>Last seen: 2 hours ago</small>
-                                </div>
-                            </div>
-                            <div class="col-lg-6 hidden-sm text-right">
-                                <a href="javascript:void(0);" class="btn btn-outline-secondary"><i class="fa fa-camera"></i></a>
-                                <a href="javascript:void(0);" class="btn btn-outline-primary"><i class="fa fa-image"></i></a>
-                                <a href="javascript:void(0);" class="btn btn-outline-info"><i class="fa fa-cogs"></i></a>
-                                <a href="javascript:void(0);" class="btn btn-outline-warning"><i class="fa fa-question"></i></a>
-                            </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+                            <label for="recipient-name" class="col-form-label">Username:</label>
+                            <input id="usernameLogin-input" type="text" class="form-control">
                         </div>
-                    </div>
-                    <div class="chat-history">
-                        <ul class="m-b-0">
-                            <li class="clearfix">
-                                <div class="message-data text-right">
-                                    <span class="message-data-time">10:10 AM, Today</span>
-                                    <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button id="usernameLogin-button" type="button" class="btn btn-primary">Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="row clearfix">
+            <div class="col-lg-12">
+                <div class="card chat-app">
+                    <div id="plist" class="people-list">
+                        <div class="input-group">
+                            <div id="addfriend-button" class="input-group-prepend">
+                                <button class="input-group-text btn btn-light"><i class="fa fa-plus"></i></button>
+                            </div>
+                            <input id="addfriend-input" type="text" class="form-control" placeholder="Add friend...">
+                        </div>
+                        <ul id="friends" class="list-unstyled chat-list mt-2 mb-0">
+                            <li class="clearfix friend-card">
+                                <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar">
+                                <div class="about">
+                                    <div class="name">Vincent Porter</div>
+                                    <div class="status"> <i class="fa fa-circle offline"></i> left 7 mins ago </div>
                                 </div>
-                                <div class="message other-message float-right"> Hi Aiden, how are you? How is the project coming along? </div>
+                            </li>
+                            <li class="clearfix active">
+                                <img src="https://bootdey.com/img/Content/avatar/avatar2.png" alt="avatar">
+                                <div class="about">
+                                    <div class="name">Aiden Chavez</div>
+                                    <div class="status"> <i class="fa fa-circle online"></i> online </div>
+                                </div>
                             </li>
                             <li class="clearfix">
-                                <div class="message-data">
-                                    <span class="message-data-time">10:12 AM, Today</span>
+                                <img src="https://bootdey.com/img/Content/avatar/avatar3.png" alt="avatar">
+                                <div class="about">
+                                    <div class="name">Mike Thomas</div>
+                                    <div class="status"> <i class="fa fa-circle online"></i> online </div>
                                 </div>
-                                <div class="message my-message">Are we meeting today?</div>                                    
-                            </li>                               
+                            </li>
                             <li class="clearfix">
-                                <div class="message-data">
-                                    <span class="message-data-time">10:15 AM, Today</span>
+                                <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                                <div class="about">
+                                    <div class="name">Christian Kelly</div>
+                                    <div class="status"> <i class="fa fa-circle offline"></i> left 10 hours ago </div>
                                 </div>
-                                <div class="message my-message">Project has been already finished and I have results to show you.</div>
                             </li>
                         </ul>
                     </div>
-                    <div class="chat-message clearfix">
-                        <div class="input-group mb-0">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text"><i class="fa fa-send"></i></span>
+                    <div class="chat">
+                        <div class="chat-header clearfix">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <a href="javascript:void(0);" data-toggle="modal" data-target="#view_info">
+                                        <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar">
+                                    </a>
+                                    <div class="chat-about">
+                                        <h6 id="receiver-name" class="m-b-0">-</h6>
+                                        <small>Last seen: 5 seconds ago</small>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6 hidden-sm text-right">
+                                    <a href="/" class="btn">
+                                        <img src="./hoot_icon.jpeg" alt="icon">
+                                    </a>
+                                    
+                                    <!-- <a href="javascript:void(0);" class="btn btn-outline-secondary"><i
+                                            class="fa fa-camera"></i></a>
+                                    <a href="javascript:void(0);" class="btn btn-outline-primary"><i
+                                            class="fa fa-image"></i></a>
+                                    <a href="javascript:void(0);" class="btn btn-outline-info"><i
+                                            class="fa fa-cogs"></i></a>
+                                    <a href="javascript:void(0);" class="btn btn-outline-warning"><i
+                                            class="fa fa-question"></i></a> -->
+                                </div>
                             </div>
-                            <input type="text" class="form-control" placeholder="Enter text here...">                                    
+                        </div>
+                        <div class="chat-history">
+                            <ul id="messages" class="m-b-0" style="overflow-x: hidden; overflow-y: scroll; min-height: 500px; max-height: 500px;">
+                                <li class="clearfix">
+                                    <div class="message-data text-right">
+                                        <span class="message-data-time">10:10 AM, Today</span>
+                                        <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                                    </div>
+                                    <div class="message other-message float-right"> Hi Aiden, how are you? How is the
+                                        project coming along? </div>
+                                </li>
+                                <li class="clearfix">
+                                    <div class="message-data">
+                                        <span class="message-data-time">10:12 AM, Today</span>
+                                    </div>
+                                    <div class="message my-message">Are we meeting today?</div>
+                                </li>
+                                <li class="clearfix">
+                                    <div class="message-data">
+                                        <span class="message-data-time">10:15 AM, Today</span>
+                                    </div>
+                                    <div class="message my-message">Project has been already finished and I have results
+                                        to show you.</div>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="chat-message clearfix">
+                            <div class="input-group mb-0">
+                                <div id="sendMessage-button" class="input-group-prepend">
+                                    <button class="input-group-text btn btn-light"><i class="fa fa-send"></i></button>
+                                </div>
+                                <input id="sendMessage-input" type="text" class="form-control"
+                                    placeholder="Enter text here...">
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    </div>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
-        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
-        crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
-        crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
-        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
-        crossorigin="anonymous"></script>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var username = "";
+        var receivername = "";
+        var roomId = "";
+        var socket = null;
+
+        $(window).on('load', function () {
+            $('#loginModal').modal('show');
+        });
+
+        $("#usernameLogin-button").click(function () {
+            username = $("#usernameLogin-input").val();
+            if (username == "") {
+                alert("Please enter a username");
+                return;
+            }
+            $("#loginModal").modal("hide");
+            $.post("/login", { username: username }, (data) => {
+                console.log(data);
+                getFriends();
+            });
+        });
+
+        function addMessage(message) {
+            message.time = message.time.replace(/T/, ' ').replace(/\..+/, '');
+            if (message.user == username) {
+                $("#messages").append(
+                    `<li class="clearfix">
+                        <div class="message-data text-right">
+                            <span class="message-data-time">${message.time}</span>
+                            <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
+                        </div>
+                        <div class="message other-message float-right"> ${message.message} </div>
+                    </li>`)
+            } else {
+                $("#messages").append(
+                    `<li class="clearfix">
+                        <div class="message-data">
+                            <span class="message-data-time">${message.time}</span>
+                        </div>
+                        <div class="message my-message"> ${message.message} </div>
+                    </li>`)
+            }
+        }
+
+        function getMessages() {
+            $.get("/messages", { roomId: roomId }, (data) => {
+                console.log("Messages");
+                console.log(data);
+                data.forEach(addMessage);
+                $("#messages").scrollTop($("#messages")[0].scrollHeight)
+            })
+        }
+
+        function sendMessage(message) {
+            $.post("/messages", { username: username, receivername: receivername, message: message, roomId: roomId }, (data) => {
+                console.log(data);
+            })
+        }
+
+        function getFriends() {
+            $("#friends").empty();
+            $.get("/friend", { username: username }, (friends) => {
+                friends.forEach(renderFriends);
+
+                $(".friend-card").click(function() {
+                    receivername = $(this).find(".name").text();
+                    $(".friend-card").removeClass("active");
+                    $(this).addClass("active");
+                    clearMessages();
+                    setReceiverVisual();
+                    getRoom();
+                })
+            })
+        }
+
+        function renderFriends(friend) {
+            $("#friends").append(
+                `<li class="clearfix friend-card">
+                    <img src="https://bootdey.com/img/Content/avatar/avatar1.png" alt="avatar">
+                    <div class="about">
+                        <div class="name">${friend.username}</div>
+                        <div class="status"> <i class="fa fa-circle online"></i> online </div>
+                    </div>
+                </li>`
+            );
+        }
+
+        function setReceiverVisual() {
+            $("#receiver-name").text(receivername);
+        }
+
+
+        function getRoom() {
+            $.get("/room", { username: username, receivername: receivername }, (rid) => {
+                console.log(rid);
+                roomId = rid;
+                if (socket) socket.close();
+                socket = io("", { query: { roomId: roomId } });
+                socket.on("message", (message) => {
+                    console.log("Message has been incame from the socket");
+                    console.log(message);
+                    $("#messages").scrollTop($("#messages")[0].scrollHeight)
+                });
+                getMessages();
+            })
+        }
+
+        function clearMessages() {
+            $("#messages").html("");
+        }
+
+        $("#sendMessage-button").click(() => {
+            sendMessage($("#sendMessage-input").val());
+            $("#sendMessage-input").val("");
+        })
+
+        $("#addfriend-button").click(() => {
+            $.post("/friend", { username: username, friendname: $("#addfriend-input").val() }, (data) => {
+                console.log(data);
+                getFriends();
+            })
+        })
+
+    </script>
 </body>
 
 </html>
