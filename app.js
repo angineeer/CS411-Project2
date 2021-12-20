@@ -22,11 +22,13 @@ db.once("open", () => { console.log("DB started successfully") });
 var User = mongoose.model('User', {
     username: { type: String, required: true, unique: true },
     friends: { type: Array, ref: 'User', default: [] },
+    keys: { type: Object, unique: true, required: true },
 })
 
 var Message = mongoose.model('Message', {
     user: { type: String, required: true },
-    message: { type: String, required: true },
+    userEncMessage: { type: String, required: true },
+    receiverEncMessage: { type: String, required: true },
     time: { type: Date, default: Date.now }
 })
 
@@ -34,6 +36,95 @@ var Room = mongoose.model('Room', {
     users: { type: Array, default: [], required: true },
     messages: { type: Array, default: [] },
 })
+
+
+app.get('/', (req, res) => {
+    res.sendFile("index.html", { root: __dirname });
+});
+
+//require crypto library
+var crypto = require('crypto');
+
+// generate a keypair for a user using the crypto library
+function generateKeyPair(username) {
+
+    var keyPair = crypto.generateKeyPairSync('rsa', {
+        modulusLength: 1024,
+        publicKeyEncoding: {
+            type: 'spki',
+            format: 'pem'
+        },
+        privateKeyEncoding: {
+            type: 'pkcs8',
+            format: 'pem',
+        }
+    });
+
+    // cipher: 'aes-256-cbc',
+    // passphrase: username
+    return keyPair;
+}
+
+
+app.post('/login', (req, res) => {
+    User.findOne({ username: req.body.username }, (err, user) => {
+        if (err)
+            res.status(500).send("Error");
+        else {
+            if (user) {
+                res.send(user.keys);
+            } else {
+                var user = new User();
+                user.username = req.body.username;
+                user.keys = generateKeyPair(req.body.username);
+                user.save((err) => {
+                    if (err)
+                        res.status(500).send("Error");
+                    else {
+                        res.send(user.keys);
+                    }
+                });
+            }
+        }
+    });
+});
+
+app.get('/room', (req, res) => {
+    User.findOne({ username: req.query.receivername }, (err, user) => {
+        if (err) {
+            console.error(err);
+            res.status(500).send("Error");
+        } else {
+            if (user) {
+
+                Room.findOne({ users: { $all: [req.query.username, req.query.receivername] } }, (err, room) => {
+                    if (err) {
+                        console.error(err);
+                        res.status(500).send("Error");
+                    } else {
+                        if (!room) {
+                            var newRoom = new Room();
+                            newRoom.users = [req.query.username, req.query.receivername];
+                            newRoom.save((err) => {
+                                if (err) {
+                                    console.error(err);
+                                    res.status(500).send("Error");
+                                } else {
+                                    res.send({ rid: newRoom._id, publicKey: user.keys.publicKey });
+                                }
+                            });
+                        }
+                        else {
+                            res.send({ rid: room._id, publicKey: user.keys.publicKey });
+                        }
+                    }
+                });
+            } else {
+                res.status(500).send("Error");
+            }
+        }
+    });
+});
 
 app.get('/messages', (req, res) => {
     Room.findOne({ _id: req.query.roomId }, (err, room) => {
@@ -49,7 +140,8 @@ app.get('/messages', (req, res) => {
 app.post('/messages', (req, res) => {
     var message = new Message();
     message.user = req.body.username;
-    message.message = req.body.message;
+    message.userEncMessage = req.body.userEncMessage;
+    message.receiverEncMessage = req.body.receiverEncMessage;
     Room.findOne({ _id: req.body.roomId }, (err, room) => {
         if (err) {
             console.error(err);
@@ -67,35 +159,6 @@ app.post('/messages', (req, res) => {
             });
         }
     });
-});
-
-app.get('/room', (req, res) => {
-    Room.findOne({ users: { $all: [req.query.username, req.query.receivername] } }, (err, room) => {
-        if (err) {
-            console.error(err);
-            res.status(500).send("Error");
-        } else {
-            if (!room) {
-                var newRoom = new Room();
-                newRoom.users = [req.query.username, req.query.receivername];
-                newRoom.save((err) => {
-                    if (err) {
-                        console.error(err);
-                        res.status(500).send("Error");
-                    } else {
-                        res.send(newRoom._id);
-                    }
-                });
-            }
-            else {
-                res.send(room._id);
-            }
-        }
-    });
-});
-
-app.get('/', (req, res) => {
-    res.sendFile("index.html", { root: __dirname });
 });
 
 app.get("/friend", (req, res) => {
@@ -158,38 +221,16 @@ app.post("/friend", (req, res) => {
     });
 });
 
-app.post('/login', (req, res) => {
-    User.findOne({ username: req.body.username }, (err, user) => {
-        if (err)
-            res.status(500).send("Error");
-        else {
-            if (user) {
-                res.send(user);
-            } else {
-                var user = new User();
-                user.username = req.body.username;
-                user.save((err) => {
-                    if (err)
-                        res.status(500).send("Error");
-                    else {
-                        res.send(user);
-                    }
-                });
-            }
-        }
-    });
-});
-
 io.on('connection', socket => {
-    console.log('A user is connecting to room: ' + socket.handshake.query.roomId);
-    console.log('A user is connecting: ' + socket.handshake.query.username);
     if (socket.handshake.query.roomId) {
+        console.log('A user is connecting to room: ' + socket.handshake.query.roomId);
         socket.join(socket.handshake.query.roomId, function (err) {
             console.log("Rooms after join: ", socket.rooms);
             console.log(err);
         });
     }
     else if (socket.handshake.query.username) {
+        console.log('A user is connecting: ' + socket.handshake.query.username);
         socket.join(socket.handshake.query.username, function (err) {
             console.log("Rooms after join: ", socket.rooms);
             console.log(err);
@@ -202,12 +243,6 @@ io.on('disconnect', socket => {
     socket.leave(socket.handshake.query.roomId);
 })
 
-// mongoose.connect(dbUrl ,{useMongoClient : true} ,(err) => {
-//   console.log('mongodb connected',err);
-// })
-
 var server = http.listen(port, () => {
     console.log(`http://localhost:${server.address().port}`);
 });
-
-// app.listen(port, () => { console.log(`Server started: http://localhost:${port}`) });

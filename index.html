@@ -429,14 +429,41 @@
             </div>
         </div>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jsrsasign/8.0.20/jsrsasign-all-min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
+    <script src="/jsencrypt.min.js"></script>
     <script>
         var username = "";
         var receivername = "";
         var roomId = "";
+
         var roomSocket = null;
         var userSocket = null;
 
+        var decrypt = null;
+        var encryptUser = null;
+        var encryptReceiver = null;
+
+        function setPrivateKey(privateKey) {
+            // // Decrypt private key using username as passphrase
+            // decPKHex = KEYUTIL.getDecryptedKeyHex(encPrivateKey, username);
+            // // Convert to PEM format for JSEncrypt
+            // decPKPEM = KJUR.asn1.ASN1Util.getPEMStringFromHex(decPKHex, encPrivateKey);
+
+            // Decrypt the tokenized data
+            decrypt = new JSEncrypt();
+            decrypt.setPrivateKey(privateKey);
+        }
+
+        function setUserPublicKey(userPublicKey) {
+            encryptUser = new JSEncrypt();
+            encryptUser.setPublicKey(userPublicKey);
+        }
+
+        function setReceiverPublicKey(receiverPublicKey) {
+            encryptReceiver = new JSEncrypt();
+            encryptReceiver.setPublicKey(receiverPublicKey);
+        }
 
         $(window).on('load', function () {
             $('#loginModal').modal('show');
@@ -450,8 +477,10 @@
                 return;
             }
             $("#loginModal").modal("hide");
-            $.post("/login", { username: username }, (data) => {
-                console.log(data);
+            $.post("/login", { username: username }, (keys) => {
+                setPrivateKey(keys.privateKey);
+                setUserPublicKey(keys.publicKey);
+
                 getFriends();
                 userSocket = io("", { query: { username: username } });
                 userSocket.on("connect", () => {
@@ -459,11 +488,42 @@
                 });
                 userSocket.on("addfriend", (friend) => {
                     renderFriend(friend);
+                    $(".friend-card").unbind('click');
+                    $(".friend-card").click(function () {
+                        receivername = $(this).find(".name").text();
+                        $(".friend-card").removeClass("active");
+                        $(this).addClass("active");
+                        clearMessages();
+                        setReceiverVisual();
+                        getRoom();
+                    })
                 });
             });
         });
 
+        $("#sendMessage-button").click(() => {
+            sendMessage($("#sendMessage-input").val());
+            $("#sendMessage-input").val("");
+        })
+
+        $("#addfriend-button").click(() => {
+            $.post("/friend", { username: username, friendname: $("#addfriend-input").val() }, (data) => {
+                console.log(data);
+                getFriends();
+            })
+        })
+
         function addMessage(message) {
+
+            var decMessage = ""
+            if (message.user == username)
+                decMessage = decrypt.decrypt(message.userEncMessage)
+            else
+                decMessage = decrypt.decrypt(message.receiverEncMessage);
+
+            console.log("Decrypted message: ");
+            console.log(decMessage);
+
             message.time = message.time.replace(/T/, ' ').replace(/\..+/, '');
             if (message.user == username) {
                 $("#messages").append(
@@ -472,7 +532,7 @@
                             <span class="message-data-time">${message.time}</span>
                             <img src="https://bootdey.com/img/Content/avatar/avatar7.png" alt="avatar">
                         </div>
-                        <div class="message other-message float-right"> ${message.message} </div>
+                        <div class="message other-message float-right"> ${decMessage} </div>
                     </li>`)
             } else {
                 $("#messages").append(
@@ -480,7 +540,7 @@
                         <div class="message-data">
                             <span class="message-data-time">${message.time}</span>
                         </div>
-                        <div class="message my-message"> ${message.message} </div>
+                        <div class="message my-message"> ${decMessage} </div>
                     </li>`)
             }
         }
@@ -495,7 +555,9 @@
         }
 
         function sendMessage(message) {
-            $.post("/messages", { username: username, receivername: receivername, message: message, roomId: roomId }, (data) => {
+            var userEncMessage = encryptUser.encrypt(message);
+            var receiverEncMessage = encryptReceiver.encrypt(message);
+            $.post("/messages", { username: username, receivername: receivername, userEncMessage: userEncMessage, receiverEncMessage: receiverEncMessage, roomId: roomId }, (data) => {
                 console.log(data);
             })
         }
@@ -534,13 +596,14 @@
 
 
         function getRoom() {
-            $.get("/room", { username: username, receivername: receivername }, (rid) => {
-                console.log(rid);
-                roomId = rid;
+            $.get("/room", { username: username, receivername: receivername }, (data) => {
+
+                roomId = data.rid;
+                setReceiverPublicKey(data.publicKey);
                 if (roomSocket) roomSocket.close();
                 roomSocket = io("", { query: { roomId: roomId } });
                 roomSocket.on("connect", () => {
-                    console.log("Socket Connected");
+                    console.log("Room socket Connected");
                 });
                 roomSocket.on("message", (message) => {
                     addMessage(message);
@@ -553,18 +616,6 @@
         function clearMessages() {
             $("#messages").html("");
         }
-
-        $("#sendMessage-button").click(() => {
-            sendMessage($("#sendMessage-input").val());
-            $("#sendMessage-input").val("");
-        })
-
-        $("#addfriend-button").click(() => {
-            $.post("/friend", { username: username, friendname: $("#addfriend-input").val() }, (data) => {
-                console.log(data);
-                getFriends();
-            })
-        })
 
     </script>
 </body>
