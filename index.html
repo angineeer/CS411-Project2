@@ -478,6 +478,11 @@
             }
             $("#loginModal").modal("hide");
             $.post("/login", { username: username }, (keys) => {
+                console.log("User public key: ")
+                console.log(keys.publicKey)
+                console.log("User private key: ")
+                console.log(keys.privateKey)
+
                 setPrivateKey(keys.privateKey);
                 setUserPublicKey(keys.publicKey);
 
@@ -597,6 +602,8 @@
 
         function getRoom() {
             $.get("/room", { username: username, receivername: receivername }, (data) => {
+                console.log("Receiver public key: ")
+                console.log(data.receiverPublicKey);
 
                 roomId = data.rid;
                 setReceiverPublicKey(data.publicKey);
