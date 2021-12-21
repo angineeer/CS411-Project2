@@ -14,8 +14,7 @@ Complex project structure avoided as much as possible for the sake of simplicity
 - Open the indicated url (http://localhost:3000) in a browser
 ## Application Usage
 - Type a username in the opened modal. (If username exists you will be logged in, else new account will be created)
-- Open site in another tab for another user.
-- Type another username in the opened modal.
+- Open site in another tab for another user. Type another username in the opened modal.
 - Add the other user using the username and input box on the top left. (Other user will be automatically notified when added as friend)
 - Select the added user from the left on each account. (After that you will be joined to the chat room with selected user)
 - Send a message using the input box on the bottom. (Other user will automatically receive the sent message without need for a page refresh)
