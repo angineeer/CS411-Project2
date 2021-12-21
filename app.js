@@ -68,12 +68,15 @@ function generateKeyPair(username) {
 
 
 app.post('/login', (req, res) => {
-    User.findOne({ username: req.body.username, password: req.body.password }, (err, user) => {
+    User.findOne({ username: req.body.username }, (err, user) => {
         if (err)
             res.status(500).send("Error");
         else {
-            if (user) {
+            if (user && user.password == req.body.password) {
                 res.send(user.keys);
+            } 
+            else if (user) {
+                res.status(500).send("Password is incorrect");
             } else {
                 var user = new User();
                 user.username = req.body.username;
