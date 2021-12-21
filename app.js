@@ -21,6 +21,7 @@ db.once("open", () => { console.log("DB started successfully") });
 
 var User = mongoose.model('User', {
     username: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
     friends: { type: Array, ref: 'User', default: [] },
     keys: { type: Object, unique: true, required: true },
 })
@@ -67,7 +68,7 @@ function generateKeyPair(username) {
 
 
 app.post('/login', (req, res) => {
-    User.findOne({ username: req.body.username }, (err, user) => {
+    User.findOne({ username: req.body.username, password: req.body.password }, (err, user) => {
         if (err)
             res.status(500).send("Error");
         else {
@@ -76,6 +77,7 @@ app.post('/login', (req, res) => {
             } else {
                 var user = new User();
                 user.username = req.body.username;
+                user.password = req.body.password;
                 user.keys = generateKeyPair(req.body.username);
                 user.save((err) => {
                     if (err)

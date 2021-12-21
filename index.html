@@ -299,7 +299,7 @@
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLongTitle">Login With Username</h5>
+                    <h5 class="modal-title" id="exampleModalLongTitle">Login</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -309,6 +309,8 @@
                         <div class="form-group">
                             <label for="recipient-name" class="col-form-label">Username:</label>
                             <input id="usernameLogin-input" type="text" class="form-control">
+                            <label for="recipient-name" class="col-form-label">password:</label>
+                            <input id="passwordLogin-input" type="password" class="form-control">
                         </div>
                     </form>
                 </div>
@@ -472,12 +474,13 @@
 
         $("#usernameLogin-button").click(function () {
             username = $("#usernameLogin-input").val();
+            var password = $("#passwordLogin-input").val();
             if (username == "") {
                 alert("Please enter a username");
                 return;
             }
-            $("#loginModal").modal("hide");
-            $.post("/login", { username: username }, (keys) => {
+            $.post("/login", { username: username, password: password }, (keys) => {
+                $("#loginModal").modal("hide");
                 console.log("User public key: ")
                 console.log(keys.publicKey)
                 console.log("User private key: ")
@@ -503,6 +506,8 @@
                         getRoom();
                     })
                 });
+            }).fail(function (err) {
+                alert("Username or password is incorrect");
             });
         });
 
