@@ -471,6 +471,12 @@
             $('#loginModal').modal('show');
             clearMessages();
         });
+        
+        $("#passwordLogin-input").keypress(function(event) {
+            if (event.keyCode === 13) {
+                $("#usernameLogin-button").click();
+            }
+        });
 
         $("#usernameLogin-button").click(function () {
             username = $("#usernameLogin-input").val();
@@ -516,12 +522,24 @@
             $("#sendMessage-input").val("");
         })
 
+        $("#sendMessage-input").keypress(function(event) {
+            if (event.keyCode === 13) {
+                $("#sendMessage-button").click();
+            }
+        });
+
         $("#addfriend-button").click(() => {
             $.post("/friend", { username: username, friendname: $("#addfriend-input").val() }, (data) => {
                 console.log(data);
                 getFriends();
             })
         })
+
+        $("#addfriend-input").keypress(function(event) {
+            if (event.keyCode === 13) {
+                $("#addfriend-button").click();
+            }
+        });
 
         function addMessage(message) {
 
